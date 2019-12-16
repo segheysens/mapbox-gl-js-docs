@@ -117,11 +117,8 @@ ${html}
                     <div id="code" className="relative">
                         <EditButtons
                             code={this.displayHTML(html)}
-                            css={css}
                             frontMatter={this.props.frontMatter}
-                            rawHtml={html}
                             head={viewport}
-                            url={`https://docs.mapbox.com${this.props.location.pathname}`}
                         />
                         <CodeSnippet
                             code={this.displayHTML(html)}
