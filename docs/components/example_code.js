@@ -9,7 +9,6 @@ import supported from '@mapbox/mapbox-gl-supported';
 import CodeSnippet from '@mapbox/mr-ui/code-snippet';
 import EditButtons from './edit-buttons';
 import Note from '@mapbox/dr-ui/note';
-import WarningImage from '@mapbox/dr-ui/warning-image';
 
 const highlightTheme = require('raw-loader!@mapbox/dr-ui/css/prism.css');
 
@@ -78,11 +77,7 @@ ${html}
             <div className="prose">
                 <div className="mb36">{md(frontMatter.description)}</div>
                 {this.state.unsupported && (
-                    <Note
-                        title="Mapbox GL unsupported"
-                        theme="warning"
-                        imageComponent={<WarningImage color="orange" />}
-                    >
+                    <Note title="Mapbox GL unsupported" theme="warning">
                         Mapbox GL requires{' '}
                         <a
                             className="link"

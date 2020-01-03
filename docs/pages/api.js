@@ -9,7 +9,6 @@ import createFormatters from 'documentation/src/output/util/formatters';
 import LinkerStack from 'documentation/src/output/util/linker_stack';
 import ApiItem from '../components/api-item';
 import DrUiNote from '@mapbox/dr-ui/note';
-import WarningImage from '@mapbox/dr-ui/warning-image';
 
 const meta = {
     title: 'API Reference',
@@ -95,7 +94,6 @@ export default class Api extends React.Component {
                     <DrUiNote
                         title="Pricing is changing for Mapbox GL JS < v1.0.0"
                         theme="warning"
-                        imageComponent={<WarningImage color="orange" />}
                     >
                         <p>
                             If you are using Mapbox GL JS v1.0.0 or higher you
