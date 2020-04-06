@@ -3,12 +3,18 @@ import PropTypes from 'prop-types';
 import createFormatters from 'documentation/src/output/util/formatters';
 import LinkerStack from 'documentation/src/output/util/linker_stack';
 import GithubSlugger from 'github-slugger';
-import { highlightJavascript } from '../../components/prism_highlight.js';
 import docs from '../api.json'; // eslint-disable-line
-import ApiItemMember from './item-member';
-import IconText from '@mapbox/mr-ui/icon-text';
-import Feedback from '@mapbox/dr-ui/feedback';
-import constants from '../../constants';
+
+import MembersList from './members-list';
+import SectionHeading from './section-heading';
+import Augments from './augments';
+import ClassName from './class-name';
+import Parameters from './parameters';
+import Properties from './properties';
+import Returns from './returns';
+import Throws from './throws';
+import Examples from './examples';
+import Related from './related';
 
 const linkerStack = new LinkerStack({}).namespaceResolver(docs, namespace => {
     const slugger = new GithubSlugger();
@@ -18,21 +24,6 @@ const linkerStack = new LinkerStack({}).namespaceResolver(docs, namespace => {
 const formatters = createFormatters(linkerStack.link);
 
 class ApiItem extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            user: undefined
-        };
-    }
-
-    componentDidMount() {
-        MapboxPageShell.afterUserCheck(() => {
-            this.setState({
-                user: MapboxPageShell.getUser() || undefined
-            });
-        });
-    }
-
     md = (ast, inline) => {
         if (
             inline &&
@@ -65,297 +56,62 @@ class ApiItem extends React.Component {
         const empty = members => !members || members.length === 0;
 
         const membersList = (members, title) =>
-            !empty(members) && (
-                <div>
-                    <div className="py6 mt12 txt-m txt-bold">{title}</div>
-                    <div className="mb18">
-                        {members.map((member, i) => (
-                            <ApiItemMember
-                                {...this.props}
-                                key={i}
-                                {...member}
-                            />
-                        ))}
-                    </div>
-                </div>
-            );
+            !empty(members) && <MembersList title={title} members={members} />;
 
         return (
             <section className="prose mb24">
-                {!this.props.nested && (
-                    <div className="mb24">
-                        <h3
-                            className="mb12"
-                            id={section.namespace.toLowerCase()}
-                        >
-                            <a
-                                className="unprose color-blue-on-hover"
-                                href={`#${section.namespace.toLowerCase()}`}
-                            >
-                                {section.name}
-                            </a>
-                        </h3>
-                        {section.context && section.context.github && (
-                            <a
-                                className="pt6 link--gray txt-s unprose"
-                                href={section.context.github.url}
-                            >
-                                <IconText iconBefore="github">
-                                    {section.context.github.path}
-                                </IconText>
-                            </a>
-                        )}
-                    </div>
-                )}
+                {!this.props.nested && <SectionHeading section={section} />}
 
                 {this.md(section.description)}
 
                 {!empty(section.augments) && (
-                    <p>
-                        Extends{' '}
-                        {section.augments.map((tag, i) => (
-                            <span
-                                key={i}
-                                dangerouslySetInnerHTML={{
-                                    __html: `${formatters.autolink(tag.name)}`
-                                }}
-                            />
-                        ))}
-                        .
-                    </p>
+                    <Augments formatters={formatters} section={section} />
                 )}
 
                 {section.kind === 'class' &&
                     !section.interface &&
                     (!section.constructorComment ||
                         section.constructorComment.access !== 'private') && (
-                        <div
-                            className="txt-code px6 py6 txt-s round bg-gray-faint my18"
-                            dangerouslySetInnerHTML={{
-                                __html: `new ${
-                                    section.name
-                                }${formatters.parameters(section)}`
-                            }}
-                        />
+                        <ClassName formatters={formatters} section={section} />
                     )}
-
-                {section.version && <div>Version: {section.version}</div>}
-                {section.license && <div>License: {section.license}</div>}
-                {section.author && <div>Author: {section.author}</div>}
-                {section.copyright && <div>Copyright: {section.copyright}</div>}
-                {section.since && <div>Since: {section.since}</div>}
 
                 {!empty(section.params) &&
                     (section.kind !== 'class' ||
                         !section.constructorComment ||
                         section.constructorComment.access !== 'private') && (
-                        <div>
-                            <div className="py6 mt12 txt-m txt-bold">
-                                Parameters
-                            </div>
-                            <div>
-                                {section.params.map((param, i) => (
-                                    <div key={i} className="mb6">
-                                        <div>
-                                            <span className="txt-code bg-transparent ml-neg3 txt-bold">
-                                                {param.name}
-                                            </span>
-                                            <code className="color-gray">
-                                                ({this.formatType(param.type)})
-                                            </code>
-                                            {param.default && (
-                                                <span>
-                                                    {'('}
-                                                    default{' '}
-                                                    <code>{param.default}</code>
-                                                    {')'}
-                                                </span>
-                                            )}
-                                            {this.md(param.description, true)}
-                                        </div>
-                                        {param.properties && (
-                                            <div className="mt6 mb12 scroll-auto">
-                                                <table className="fixed-table">
-                                                    <colgroup>
-                                                        <col width="30%" />
-                                                        <col width="70%" />
-                                                    </colgroup>
-                                                    <thead>
-                                                        <tr className="txt-bold bg-gray-faint">
-                                                            <td
-                                                                style={{
-                                                                    borderTopLeftRadius:
-                                                                        '4px'
-                                                                }}
-                                                            >
-                                                                Name
-                                                            </td>
-                                                            <td
-                                                                style={{
-                                                                    borderTopRightRadius:
-                                                                        '4px'
-                                                                }}
-                                                            >
-                                                                Description
-                                                            </td>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody className="mt6">
-                                                        {param.properties.map(
-                                                            (property, i) => (
-                                                                <tr key={i}>
-                                                                    <td>
-                                                                        <span className="txt-code txt-bold txt-break-word bg-white ml-neg3">
-                                                                            {
-                                                                                property.name
-                                                                            }
-                                                                        </span>
-                                                                        <br />
-                                                                        <code className="color-gray txt-break-word">
-                                                                            {this.formatType(
-                                                                                property.type
-                                                                            )}
-                                                                        </code>
-                                                                        <br />
-                                                                        {property.default && (
-                                                                            <span className="color-gray txt-break-word">
-                                                                                default{' '}
-                                                                                <code>
-                                                                                    {
-                                                                                        property.default
-                                                                                    }
-                                                                                </code>
-                                                                            </span>
-                                                                        )}
-                                                                    </td>
-                                                                    <td>
-                                                                        <span>
-                                                                            {this.md(
-                                                                                property.description,
-                                                                                true
-                                                                            )}
-                                                                        </span>
-                                                                    </td>
-                                                                </tr>
-                                                            )
-                                                        )}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+                        <Parameters
+                            formatType={this.formatType}
+                            md={this.md}
+                            section={section}
+                        />
                     )}
 
                 {!empty(section.properties) && (
-                    <div>
-                        <div className="py6 mt12 txt-m txt-bold">
-                            Properties
-                        </div>
-                        <div>
-                            {section.properties.map((property, i) => (
-                                <div key={i} className="mb6">
-                                    <span className="txt-code txt-bold bg-white mr3 ml-neg3">
-                                        {property.name}
-                                    </span>
-                                    <code className="color-gray">
-                                        ({this.formatType(property.type)})
-                                    </code>
-                                    {property.default && (
-                                        <span>
-                                            {'('}
-                                            default{' '}
-                                            <code>{property.default}</code>
-                                            {')'}
-                                        </span>
-                                    )}
-                                    {property.description && (
-                                        <span>
-                                            :{' '}
-                                            {this.md(
-                                                property.description,
-                                                true
-                                            )}
-                                        </span>
-                                    )}
-                                    {property.properties && (
-                                        <ul>
-                                            {property.properties.map(
-                                                (property, i) => (
-                                                    <li key={i}>
-                                                        <code>
-                                                            {property.name}
-                                                        </code>{' '}
-                                                        {this.formatType(
-                                                            property.type
-                                                        )}
-                                                        {property.default && (
-                                                            <span>
-                                                                {'('}
-                                                                default{' '}
-                                                                <code>
-                                                                    {
-                                                                        property.default
-                                                                    }
-                                                                </code>
-                                                                {')'}
-                                                            </span>
-                                                        )}
-                                                        {this.md(
-                                                            property.description
-                                                        )}
-                                                    </li>
-                                                )
-                                            )}
-                                        </ul>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    <Properties
+                        formatType={this.formatType}
+                        md={this.md}
+                        section={section}
+                    />
                 )}
 
-                {section.returns &&
-                    section.returns.map((ret, i) => (
-                        <div key={i}>
-                            <div className="py6 mt12 txt-m txt-bold">
-                                Returns
-                            </div>
-                            <code>{this.formatType(ret.type)}</code>
-                            {ret.description && (
-                                <span>: {this.md(ret.description, true)}</span>
-                            )}
-                        </div>
-                    ))}
+                {section.returns && (
+                    <Returns
+                        formatType={this.formatType}
+                        md={this.md}
+                        section={section}
+                    />
+                )}
 
                 {!empty(section.throws) && (
-                    <div>
-                        <div className="py6 mt12 txt-m txt-bold">Throws</div>
-                        <ul>
-                            {section.throws.map((throws, i) => (
-                                <li key={i}>
-                                    {this.formatType(throws.type)}:{' '}
-                                    {this.md(throws.description, true)}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                    <Throws
+                        formatType={this.formatType}
+                        md={this.md}
+                        section={section}
+                    />
                 )}
 
                 {!empty(section.examples) && (
-                    <div>
-                        <div className="py6 mt12 txt-m txt-bold">Example</div>
-                        {section.examples.map((example, i) => (
-                            <div key={i}>
-                                {example.caption && (
-                                    <p>{this.md(example.caption)}</p>
-                                )}
-                                {highlightJavascript(example.description)}
-                            </div>
-                        ))}
-                    </div>
+                    <Examples md={this.md} section={section} />
                 )}
 
                 {membersList(section.members.static, 'Static Members')}
@@ -363,49 +119,22 @@ class ApiItem extends React.Component {
                 {membersList(section.members.events, 'Events')}
 
                 {!empty(section.sees) && (
-                    <div>
-                        <div className="py6 mt12 txt-m txt-bold">Related</div>
-                        <ul>
-                            {section.sees.map((see, i) => (
-                                <li key={i}>{this.md(see, true)}</li>
-                            ))}
-                        </ul>
-                    </div>
+                    <Related md={this.md} section={section} />
                 )}
-
-                <div className="mt18">
-                    <Feedback
-                        site="Mapbox GL JS"
-                        section={section.name}
-                        type={`section on ${section.name}`}
-                        location={this.props.location}
-                        user={this.state.user}
-                        webhook={constants.FORWARD_EVENT_WEBHOOK}
-                    />
-                </div>
             </section>
         );
     }
 }
 
 ApiItem.propTypes = {
-    nested: PropTypes.string,
-    namespace: PropTypes.string,
-    name: PropTypes.string,
-    context: PropTypes.object,
+    nested: PropTypes.bool,
     augments: PropTypes.array,
     kind: PropTypes.string,
     constructorComment: PropTypes.shape({
         access: PropTypes.string
     }),
-    version: PropTypes.string,
-    license: PropTypes.string,
-    author: PropTypes.string,
-    copyright: PropTypes.string,
-    location: PropTypes.object,
     description: PropTypes.object,
     interface: PropTypes.string,
-    since: PropTypes.string,
     params: PropTypes.array,
     properties: PropTypes.array,
     returns: PropTypes.array,
