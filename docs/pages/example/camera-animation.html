@@ -143,8 +143,8 @@
                 : (Math.sqrt(1 - Math.pow(-2 * t + 2, 2)) + 1) / 2;
         },
         easeOutBounce: function(t) {
-            const n1 = 7.5625;
-            const d1 = 2.75;
+            var n1 = 7.5625;
+            var d1 = 2.75;
 
             if (t < 1 / d1) {
                 return n1 * t * t;
