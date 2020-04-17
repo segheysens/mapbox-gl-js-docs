@@ -1,6 +1,6 @@
 /*---
 title: Customize camera animations
-description: Customize camera animations using [AnimationOptions](https://docs.mapbox.com/mapbox-gl-js/api/#animationoptions)
+description: Customize camera animations using [AnimationOptions](https://docs.mapbox.com/mapbox-gl-js/api/#animationoptions).
 tags:
   - user-interaction
   - camera
