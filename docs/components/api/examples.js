@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Title from './title';
-import { highlightJavascript } from '../../components/prism_highlight.js';
+import Copyable from '../../components/copyable.js';
 
 export default class Examples extends React.Component {
     render() {
@@ -12,7 +12,9 @@ export default class Examples extends React.Component {
                 {section.examples.map((example, i) => (
                     <React.Fragment key={i}>
                         {example.caption && <p>{md(example.caption)}</p>}
-                        {highlightJavascript(example.description)}
+                        <Copyable lang="javascript">
+                            {example.description}
+                        </Copyable>
                     </React.Fragment>
                 ))}
             </React.Fragment>
@@ -22,7 +24,12 @@ export default class Examples extends React.Component {
 
 Examples.propTypes = {
     section: PropTypes.shape({
-        examples: PropTypes.array.isRequired
+        examples: PropTypes.arrayOf(
+            PropTypes.shape({
+                caption: PropTypes.string,
+                description: PropTypes.string.isRequired
+            })
+        ).isRequired
     }).isRequired,
     md: PropTypes.func.isRequired
 };

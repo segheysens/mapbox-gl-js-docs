@@ -6,11 +6,11 @@ export default class ClassName extends React.Component {
         const { section, formatters } = this.props;
         return (
             <div
-                className="txt-code px6 py6 txt-s round bg-gray-faint my18"
+                className="txt-code my18 py12 px12 txt-s"
                 dangerouslySetInnerHTML={{
-                    __html: `new ${section.name}${formatters.parameters(
-                        section
-                    )}`
+                    __html: `<span class="token keyword">new</span> <span class="token class-name">${
+                        section.name
+                    }</span>${formatters.parameters(section)}`
                 }}
             />
         );
