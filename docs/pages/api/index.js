@@ -11,19 +11,10 @@ import PropTypes from 'prop-types';
 import PageShell from '../../components/page_shell';
 import { prefixUrl } from '@mapbox/batfish/modules/prefix-url';
 import { version } from '../../../mapbox-gl-js/package.json';
-import docs from '../../components/api.json'; // eslint-disable-line
-import GithubSlugger from 'github-slugger';
-import createFormatters from 'documentation/src/output/util/formatters';
-import LinkerStack from 'documentation/src/output/util/linker_stack';
+import docs from '../../components/api.json';
 import ApiItem from '../../components/api/item';
 import DrUiNote from '@mapbox/dr-ui/note';
-
-const linkerStack = new LinkerStack({}).namespaceResolver(docs, namespace => {
-    const slugger = new GithubSlugger();
-    return `#${slugger.slug(namespace)}`;
-});
-
-const formatters = createFormatters(linkerStack.link);
+import formatters from '../../util/formatters';
 
 function md(ast, inline) {
     if (

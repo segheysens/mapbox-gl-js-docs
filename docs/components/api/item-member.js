@@ -1,18 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import GithubSlugger from 'github-slugger';
-import createFormatters from 'documentation/src/output/util/formatters';
-import LinkerStack from 'documentation/src/output/util/linker_stack';
-import docs from '../api.json'; // eslint-disable-line
+import formatters from '../../util/formatters';
 import ApiItem from './item';
 import Icon from '@mapbox/mr-ui/icon';
-
-const linkerStack = new LinkerStack({}).namespaceResolver(docs, namespace => {
-    const slugger = new GithubSlugger();
-    return `#${slugger.slug(namespace)}`;
-});
-
-const formatters = createFormatters(linkerStack.link);
 
 class ApiItemMember extends React.Component {
     constructor(props) {

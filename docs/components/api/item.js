@@ -1,10 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import createFormatters from 'documentation/src/output/util/formatters';
-import LinkerStack from 'documentation/src/output/util/linker_stack';
-import GithubSlugger from 'github-slugger';
-import docs from '../api.json'; // eslint-disable-line
-
 import MembersList from './members-list';
 import SectionHeading from './section-heading';
 import Augments from './augments';
@@ -15,13 +10,8 @@ import Returns from './returns';
 import Throws from './throws';
 import Examples from './examples';
 import Related from './related';
-
-const linkerStack = new LinkerStack({}).namespaceResolver(docs, namespace => {
-    const slugger = new GithubSlugger();
-    return `#${slugger.slug(namespace)}`;
-});
-
-const formatters = createFormatters(linkerStack.link);
+import formatters from '../../util/formatters';
+import empty from '../../util/empty';
 
 class ApiItem extends React.Component {
     md = (ast, inline) => {
@@ -52,8 +42,6 @@ class ApiItem extends React.Component {
 
     render() {
         const section = this.props;
-
-        const empty = members => !members || members.length === 0;
 
         const membersList = (members, title) =>
             !empty(members) && <MembersList title={title} members={members} />;
