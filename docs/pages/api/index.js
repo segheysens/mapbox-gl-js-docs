@@ -66,9 +66,7 @@ export default class Api extends React.Component {
                         </p>
                     </DrUiNote>
                     <div className="api-section">
-                        // to break into pages, we should be able to filter this
-                        // `doc` on doc.name === page.title (for each individual
-                        // page)
+                        {/* to break into pages, we should be able to filter this `doc` on doc.name === page.title (for each individual page */}
                         {docs.map(doc => {
                             // each page's content is stashed in `members.static` for some reason....
 
