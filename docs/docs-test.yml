@@ -1,0 +1,4 @@
+toc:
+  - name: Get map state
+    children:
+      - Map.getBearing
