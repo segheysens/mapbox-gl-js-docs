@@ -78,10 +78,10 @@
         <fieldset>
             <label>Select easing function</label>
             <select id="easing" name="easing">
-                <option value="easeInCubic">easeInCubic</option>
-                <option value="easeOutQuint">easeOutQuint</option>
-                <option value="easeInOutCirc">easeInOutCirc</option>
-                <option value="easeOutBounce">easeOutBounce</option>
+                <option value="easeInCubic">Ease In Cubic</option>
+                <option value="easeOutQuint">Ease Out Quint</option>
+                <option value="easeInOutCirc">Ease In/Out Circ</option>
+                <option value="easeOutBounce">Ease Out Bounce</option>
             </select>
         </fieldset>
         <fieldset>
@@ -134,7 +134,13 @@
 </div>
 
 <script>
-    // declare various easing functions
+    // declare various easing functions.
+    // easing functions mathematically describe
+    // how fast a value changes during an animation.
+    // each function takes a parameter t that represents
+    // the time elapsed at each step of an animation.
+    // t is in a range of 0 to 1 where 0 is the initial
+    // state and 1 is the completed state.
     var easingFunctions = {
         easeInCubic: function(t) {
             return t * t * t;
@@ -233,10 +239,10 @@
             };
 
             // Create a random location to fly to by offsetting the map's
-            // initial center point by up to 5 degrees.
+            // initial center point by up to 10 degrees.
             var center = [
-                -95 + (Math.random() - 0.5) * 10,
-                40 + (Math.random() - 0.5) * 10
+                -95 + (Math.random() - 0.5) * 20,
+                40 + (Math.random() - 0.5) * 20
             ];
 
             // merge animationOptions with other flyTo options
