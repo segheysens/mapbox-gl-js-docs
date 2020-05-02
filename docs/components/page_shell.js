@@ -315,7 +315,7 @@ class PageShell extends React.Component {
                             {this.props.children}
                         </div>
                         {activeTab !== 'overview' ? (
-                            <div className="fixed block mx24 my24 z5 bottom right">
+                            <div className="fixed block none-mm mx24 my24 z5 bottom right">
                                 <BackToTopButton />
                             </div>
                         ) : (
